@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import payment from 'payment';
+import creditCardExpiryValidator from 'credit-card-expiry-validator';
 import creditCardType from 'credit-card-type';
 import styled from 'styled-components';
 
@@ -184,8 +185,11 @@ class CreditCardInput extends Component<Props, State> {
   };
 
   handleCardExpiryBlur = (e: SyntheticInputEvent<*>) => {
-    if (!payment.fns.validateCardExpiry(e.target.value)) {
-      this.setFieldInvalid('Expiry date is invalid');
+    let cardExpiryBlur = e.target.value.split(' / ').join('/');
+    if (creditCardExpiryValidator.isExpiryInvalid(cardExpiryBlur)) {
+      this.setFieldInvalid(
+        creditCardExpiryValidator.isExpiryInvalid(cardExpiryBlur)
+      );
     }
 
     const { cardExpiryInputProps } = this.props;
@@ -195,17 +199,16 @@ class CreditCardInput extends Component<Props, State> {
   };
 
   handleCardExpiryChange = (e: SyntheticInputEvent<*>) => {
-    const cardExpiry = e.target.value;
-    const cardExpiryLength = cardExpiry.split(' / ').join('').length;
+    const cardExpiry = e.target.value.split(' / ').join('/');
     payment.formatCardExpiry(document.getElementById('card-expiry'));
 
     this.setFieldValid();
-    if (cardExpiryLength >= 4) {
-      if (payment.fns.validateCardExpiry(cardExpiry)) {
-        this.cvcField.focus();
-      } else {
-        this.setFieldInvalid('Expiry date is invalid');
-      }
+    if (creditCardExpiryValidator.isExpiryInvalid(cardExpiry)) {
+      this.setFieldInvalid(
+        creditCardExpiryValidator.isExpiryInvalid(cardExpiry)
+      );
+    } else {
+      this.cvcField.focus();
     }
 
     const { cardExpiryInputProps } = this.props;
