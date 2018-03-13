@@ -185,11 +185,10 @@ class CreditCardInput extends Component<Props, State> {
   };
 
   handleCardExpiryBlur = (e: SyntheticInputEvent<*>) => {
-    let cardExpiryBlur = e.target.value.split(' / ').join('/');
-    if (creditCardExpiryValidator.isExpiryInvalid(cardExpiryBlur)) {
-      this.setFieldInvalid(
-        creditCardExpiryValidator.isExpiryInvalid(cardExpiryBlur)
-      );
+    const cardExpiry = e.target.value.split(' / ').join('/');
+    const expiryError = creditCardExpiryValidator.isExpiryInvalid(cardExpiry)
+    if (expiryError) {
+      this.setFieldInvalid(expiryError);
     }
 
     const { cardExpiryInputProps } = this.props;
@@ -203,10 +202,9 @@ class CreditCardInput extends Component<Props, State> {
     payment.formatCardExpiry(document.getElementById('card-expiry'));
 
     this.setFieldValid();
-    if (creditCardExpiryValidator.isExpiryInvalid(cardExpiry)) {
-      this.setFieldInvalid(
-        creditCardExpiryValidator.isExpiryInvalid(cardExpiry)
-      );
+    const expiryError = creditCardExpiryValidator.isExpiryInvalid(cardExpiry);
+    if (expiryError) {
+      this.setFieldInvalid(expiryError);
     } else {
       this.cvcField.focus();
     }
