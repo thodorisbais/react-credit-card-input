@@ -203,10 +203,13 @@ class CreditCardInput extends Component<Props, State> {
 
     this.setFieldValid();
     const expiryError = creditCardExpiryValidator.isExpiryInvalid(cardExpiry);
-    if (expiryError) {
-      this.setFieldInvalid(expiryError);
-    } else {
-      this.cvcField.focus();
+
+    if (cardExpiry.length >= 4) {
+      if (expiryError) {
+        this.setFieldInvalid(expiryError);
+      } else {
+        this.cvcField.focus();
+      }
     }
 
     const { cardExpiryInputProps } = this.props;
